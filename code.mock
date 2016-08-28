@@ -1,0 +1,111 @@
+SET_RET_TO_INPUT;		//READ M
+COPY_RET_TO_REG_0;	//LOAD M INTO REG_0
+SET_RET_TO_INPUT;		//READ N
+COPY_RET_TO_REG_0;	//LOAD N INTO REG_1
+
+#TAG 0					////////luint formulaAckerman(luint m, luint n, mcell* cacheAck){
+																
+CHECK_TREE_0_1;		//RET=CHECK_TREE_0_1;
+COPY_RET_TO_COMPBRA;
+
+JUMPIFZERO	TO #TAG 1;
+END;
+
+#TAG 1			//CALL FORMULASOLVEACKERMAN;
+
+//////////////////////////
+
+//////////////////////////luint formulaSolveAckerman(REG_0 /*M*/, REG_1 /*N*/){
+	
+//A = 0;
+	
+	SET_A_TO_1;
+	INCREMENT_A;	//2
+	INCREMENT_A;	//3
+	
+	COPY_A_TO_REG_3;
+	
+	SET_A_TO_0;		//REG_3=3;
+						
+	#TAG 2
+
+	COPY_REG_0_TO_COMPBRA;
+	COMPBRA_LARGER_THAN_REG3;		//SETS COMPBRA AS 0 IF FALSE, AS 1 IF TRUE
+	
+	JUMPIFZERO TAG 3;
+	
+	COPY_REG_1_TO_COMPBRA;
+	JUMPIFNOTZERO TAG 4;
+	SET_A_TO_1;
+	COPY_A_TO_REG_1;
+
+	JUMP_TO #TAG 5
+		
+	#TAG 4
+	COPY_REG_1_TO_A;
+	DECREMENT_A;
+	COPY_A_TO_REG_1;
+	
+	CALL formulaAckerman(REG_0, REG_1);	
+	COPY_RET_TO_REG_1;
+	
+	#TAG 5
+	COPY_REG_0_TO_A;
+	DECREMENT_A;
+	COPY_A_TO_REG_0;
+	
+	JUMP TAG 2
+	
+	#TAG 3		
+	COPY_REG_0_TO_COMPBRA;
+	JUMPIFNOTZERO TAG 6
+	COPY_REG_1_TO_RET;
+	INCREMENT_RET;
+	JUMP #TAG 9
+	
+	#TAG 6
+	DECREMENT_COMPBRA;
+	JUMPIFNOTZERO TAG 7
+	COPY_REG_1_TO_RET;
+	INCREMENT_RET;
+	INCREMENT_RET;
+	JUMP #TAG 9
+	
+	#TAG 7
+	DECREMENT_COMPBRA;
+	JUMPIFNOTZERO TAG 8
+	
+	SET_A_TO_1;
+	INCREMENT_A;			// A = 2
+	
+	MULTIPLY_A_REG_1;		// A = A * REG_1
+	ADD_REG_3;
+	COPY_A_TO_RET;
+	
+	JUMP #TAG 9
+	
+	#TAG 8
+	
+	DECREMENT_COMPBRA;
+	JUMPIFNOTZERO TAG 9
+	
+	
+	COPY_REG_1_TO_A;
+	INCREMENT_A;
+	INCREMENT_A;
+	INCREMENT_A;
+	COPY_A_REG_4;						////n+3
+	
+	SET_A_TO_1;
+	INCREMENT_A;						////A=2, REG4=n+3				
+	
+	POWER_A_REG_4;						////pow(2,(n+3))
+	DECREMENT_A;
+	DECREMENT_A;
+	DECREMENT_A;	
+	COPY_A_TO_RET;	////RET = pow(2,(n+3)) - 3; 
+	
+	#TAG 9
+	WRITE_TREE_0_1	//writeListNumber(cacheAck,m,n,RET); 
+	RETURN;
+}
